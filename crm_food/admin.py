@@ -7,10 +7,12 @@ from crm_food.models import (
                          Role,
                          Meal,
                          MealCategory,
+                         OrderItem,
                       )
 
 
 admin.site.register(Table)
+admin.site.register(OrderItem)
 admin.site.register(Order)
 admin.site.register(Department)
 admin.site.register(Role)

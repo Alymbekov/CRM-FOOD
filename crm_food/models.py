@@ -24,17 +24,6 @@ class Status(models.Model):
     def __str__(self):
         return '%s' % self.name_of_statuses
 
-class Order(models.Model):
-    meals = models.ManyToManyField('Meal',related_name="orders",blank=True)
-    table = models.ForeignKey('Table',on_delete=models.SET_NULL,related_name='orders',null=True,blank=True)
-    status = models.ForeignKey('Status',related_name="orders",on_delete=models.CASCADE,null=True,blank=True)
-    isitopen = models.PositiveIntegerField()
-    date_of_order = models.DateTimeField(auto_now_add=True)
-
-    # meal = models.ForeignKey()
-
-    def __str__(self):
-        return "{}".format(self.date_of_order)
 
 class Department(models.Model):
     name_of_departments = models.CharField(max_length=155)
@@ -51,9 +40,32 @@ class Role(models.Model):
         return self.name_of_role
 
 
+class Order(models.Model):
+    #meals = models.ManyToManyField('Meal',related_name="orders",blank=True)
+    table = models.ForeignKey('Table',on_delete=models.SET_NULL,related_name='orders',null=True,blank=True)
+    status = models.ForeignKey('Status',related_name="orders",on_delete=models.CASCADE,null=True,blank=True)
+    isitopen = models.PositiveIntegerField()
+    date_of_order = models.DateTimeField(auto_now_add=True)
+    order_items = models.ForeignKey('OrderItem',related_name="orders",on_delete=models.CASCADE,null=True,blank=True)
+    # meal = models.ForeignKey()
+
+    def __str__(self):
+        return "{} {} {}".format(self.date_of_order,self.table,self.status)
+
+
+class OrderItem(models.Model):
+
+    meals = models.ForeignKey('Meal',related_name='orders_item',on_delete=models.SET_NULL,null=True,blank=True)
+    count = models.PositiveSmallIntegerField(default=1)
+
+    def __str__(self):
+        return '%s %s' % (self.meals,self.count)
+
 class Meal(models.Model):
+
     name_of_meals = models.CharField(max_length=100)
     price = models.FloatField()
+    amount = models.PositiveSmallIntegerField(default=1)
     description = models.TextField()
     category = models.ForeignKey('MealCategory',on_delete=models.CASCADE,related_name="meals",null=True,blank=True)
 
@@ -78,6 +90,22 @@ class MealCategory(models.Model):
         return '%s' % self.name_of_categories
 
 
+class ServicePercentage:
+    name = models.PositiveIntegerField()
 
 
+    def __str__(self):
+
+        return self.name
+
+
+class Checks(models.Model):
+
+    orders = models.OneToOneField('Order',on_delete=models.CASCADE)
+    date_of_check = models.DateTimeField(auto_now_add=True)
+    service_fee = models.PositiveSmallIntegerField(default=1)
+    total_sum = models.FloatField()
+
+    def __str__(self):
+        return "{} {} {} {}".format(self.orders,self.date_of_check,self.service_fee,self.total_sum)
 # Create your models here.

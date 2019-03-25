@@ -19,7 +19,7 @@ class Status(models.Model):
         (1, 'Pending'),
         (2, 'Done'),
     )
-    name_of_statuses = models.PositiveIntegerField(choices=STATUS_CHOICES,default=1,max_length=255)
+    name_of_statuses = models.PositiveIntegerField(choices=STATUS_CHOICES,default=1)
 
     def __str__(self):
         return '%s' % self.name_of_statuses
@@ -46,7 +46,7 @@ class Order(models.Model):
     status = models.ForeignKey('Status',related_name="orders",on_delete=models.CASCADE,null=True,blank=True)
     isitopen = models.PositiveIntegerField()
     date_of_order = models.DateTimeField(auto_now_add=True)
-    order_items = models.ForeignKey('OrderItem',related_name="orders",on_delete=models.CASCADE,null=True,blank=True)
+    order_items = models.ManyToManyField('OrderItem',related_name="orders")
     # meal = models.ForeignKey()
 
     def __str__(self):
@@ -55,7 +55,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
 
-    meals = models.ForeignKey('Meal',related_name='orders_item',on_delete=models.SET_NULL,null=True,blank=True)
+    meals = models.ManyToManyField('Meal',related_name="ordersitem")
     count = models.PositiveSmallIntegerField(default=1)
 
     def __str__(self):
@@ -90,13 +90,13 @@ class MealCategory(models.Model):
         return '%s' % self.name_of_categories
 
 
-class ServicePercentage:
-    name = models.PositiveIntegerField()
+class ServicePercentage(models.Model):
 
+    name = models.PositiveIntegerField()
 
     def __str__(self):
 
-        return self.name
+        return "".format(self.name)
 
 
 class Checks(models.Model):
@@ -105,7 +105,14 @@ class Checks(models.Model):
     date_of_check = models.DateTimeField(auto_now_add=True)
     service_fee = models.PositiveSmallIntegerField(default=1)
     total_sum = models.FloatField()
+    print(total_sum)
+
+    def counting(self):
+        if self.price and self.count:
+            self.total_sum=self.price * self.count
+            print(self.total_sum)
 
     def __str__(self):
         return "{} {} {} {}".format(self.orders,self.date_of_check,self.service_fee,self.total_sum)
 # Create your models here.
+

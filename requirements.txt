@@ -3,3 +3,5 @@ pillow
 psycopg2
 psycopg2-binary
 python-decouple
+djangorestframework
+pygments

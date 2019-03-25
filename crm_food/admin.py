@@ -1,5 +1,6 @@
 from django.contrib import admin
 from crm_food.models import (
+                         Checks,
                          Table,
                          Order,
                          Department,
@@ -8,10 +9,13 @@ from crm_food.models import (
                          Meal,
                          MealCategory,
                          OrderItem,
+                         ServicePercentage,
                       )
 
 
 admin.site.register(Table)
+admin.site.register(ServicePercentage)
+admin.site.register(Checks)
 admin.site.register(OrderItem)
 admin.site.register(Order)
 admin.site.register(Department)
